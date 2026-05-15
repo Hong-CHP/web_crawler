@@ -13,10 +13,12 @@ Viste: https://xxx.xxx/robots.txt to make sure the authorization to craw and the
 ## Start
 
 ### 1. Send http request
-Send a request to target url, then stock page content in a local file.
+Send a request to target url
 
 ### 2. Extract data from web
+Use lxml and xpath to extract all target informations
 
 ### 3. Clean data source
 
 ### 4. Stock data
+Stock content in a local .csv file
