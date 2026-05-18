@@ -9,7 +9,38 @@ TMDB_DOMAINE = "https://www.themoviedb.org"
 TMDB_TOP_URL = "https://www.themoviedb.org/movie/top-rated"
 
 def get_movie_info(movie_url) -> list:
-    pass
+    # 1.send request, get details
+    movie_res = requests.get(movie_url)
+
+    # 2.parse data, get movie's info
+    movie_doc = html.fromstring(movie_res.text)
+    movie_name = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[1]/h2/a/text()")
+    movie_year = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[1]/h2/span/text()")
+    movie_date = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[1]/div/span[2]/text()")
+    movie_genres = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[1]/div/span[3]/a/text()")
+    movie_time = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[1]/div/span[4]/text()")
+    movie_rate = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[2]/div/div/div[1]/div/div[1]/div/div/@data-percent")
+    movie_lang = movie_doc.xpath("/html/body/div[1]/main/section/div[3]/div/div/div[2]/div/section/div[1]/div/section[1]/p[2]/text()")
+    movie_dir = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[3]/ol/li[1]/p[1]/a/text()")
+    movie_author = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[3]/ol/li[2]/p[1]/a/text()")
+    movie_slogan = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[3]/h3[1]/text()")
+    movie_desp = movie_doc.xpath("/html/body/div[1]/main/section/div[2]/div/div/section/div[2]/section/div[3]/div/p/text()")
+    # 3.return infos
+    movie_info = {
+        "name": movie_name[0].strip() if movie_name else '',
+        "year": movie_year[0].strip() if movie_year else '',
+        "date": movie_date[0].strip() if movie_date else '',
+        "genres": ','.join(g.strip() for g in movie_genres) if movie_genres else '',
+        "time": movie_time[0].strip() if movie_time else '',
+        "rate": movie_rate[0].strip() if movie_rate else '',
+        "lang": movie_lang[0].strip() if movie_lang else '',
+        "dir": movie_dir[0].strip() if movie_dir else '',
+        "auth": movie_author[0].strip() if movie_author else '',
+        "slog": movie_slogan[0].strip() if movie_slogan else '',
+        "desp": movie_desp[0].strip() if movie_desp else '',
+    }
+    return movie_info
+    
 
 def save_all_movies(all_movies):
     pass
