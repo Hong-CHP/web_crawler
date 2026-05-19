@@ -1,4 +1,4 @@
-import os, csv
+import os, csv, re
 import requests
 from lxml import html
 from urllib.parse import urlparse
@@ -8,6 +8,27 @@ from save_csv import save_csv_content
 TMDB_DOMAINE = "https://www.themoviedb.org"
 TMDB_TOP_URL_1 = "https://www.themoviedb.org/movie/top-rated"
 TMDB_TOP_URL_2 = "https://www.themoviedb.org/discover/movie/items"
+
+def parse_movie_year(movie_year) -> str:
+    if movie_year:
+        movie_year = movie_year[0].strip() if movie_year else ''
+    return movie_year.replace("(", "").replace(")", "")
+
+def parse_movie_date(movie_date) -> str:
+    movie_date = movie_date[0].strip() if movie_date else ''
+    print(movie_date)
+    reg = re.search(r"\d{2}/\d{2}/\d{4}", movie_date)
+    if reg:
+        return reg.group()
+
+def parse_movie_time(movie_time) -> str:
+    if movie_time:
+        movie_time = movie_time[0].strip() if movie_time else ''
+        h_res = re.search(r"(\d+)h", movie_time)
+        m_res = re.search(r"(\d+)m", movie_time)
+        h = int(h_res.group(1)) if h_res else 0
+        m = int(m_res.group(1)) if m_res else 0
+        return h * 60 + m
 
 def get_movie_info(movie_url) -> list:
     # 1.send request, get details
@@ -30,10 +51,10 @@ def get_movie_info(movie_url) -> list:
     # 3.return infos
     movie_info = {
         "name": movie_name[0].strip() if movie_name else '',
-        "year": movie_year[0].strip() if movie_year else '',
-        "date": movie_date[0].strip() if movie_date else '',
+        "year": parse_movie_year(movie_year),
+        "date": parse_movie_date(movie_date),
         "genres": ','.join(g.strip() for g in movie_genres) if movie_genres else '',
-        "time": movie_time[0].strip() if movie_time else '',
+        "time": parse_movie_time(movie_time),
         "rate": movie_rate[0].strip() if movie_rate else '',
         "lang": movie_lang[0].strip() if movie_lang else '',
         "dir": movie_dir[0].strip() if movie_dir else '',
