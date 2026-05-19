@@ -2,8 +2,6 @@ import os, csv, re
 import requests
 from lxml import html
 from urllib.parse import urlparse
-from save_csv import save_csv_content
-
 
 TMDB_DOMAINE = "https://www.themoviedb.org"
 TMDB_TOP_URL_1 = "https://www.themoviedb.org/movie/top-rated"
